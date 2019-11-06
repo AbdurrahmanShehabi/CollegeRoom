@@ -1,29 +1,20 @@
 {
-  "name": "express-api-token-authentication",
+  "name": "yiyak-clone",
   "version": "1.0.0",
-  "description": "Example of token based authentication with Node.js, Express.js, MongoDB and Mongoose.",
+  "description": "Easy to use generic express backend with jwt token auth built on mongo",
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node app"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/fedosejev/express-api-token-authentication.git"
-  },
-  "author": "Artemij Fedosejev",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/fedosejev/express-api-token-authentication/issues"
-  },
-  "homepage": "https://github.com/fedosejev/express-api-token-authentication",
   "dependencies": {
-    "bcrypt": "^0.8.5",
+    "bcrypt": "^3.0.6",
+    "bluebird": "^3.7.1",
     "body-parser": "^1.14.2",
     "cors": "^2.7.1",
     "express": "^4.13.3",
     "jsonwebtoken": "^5.4.1",
-    "mongoose": "^4.3.4",
-    "shortid": "^2.2.4"
+    "mongoose": "^5.7.0"
   }
 }

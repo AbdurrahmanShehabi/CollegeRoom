@@ -1,15 +1,14 @@
-var express = require('express');
-var mongoose = require('mongoose');
-var bodyParser = require('body-parser');
-var cors = require('cors');
-var app = express();
+const express = require('express');
+const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
+const cors = require('cors');
+const app = express();
 
-var CONFIG = require('./config.json');
-var PORT = parseInt(CONFIG.server.port, 10);
-var HOST_NAME = CONFIG.server.hostName;
-var DATABASE_NAME = CONFIG.database.name;
-
-var tokenMiddleware = require('./middleware/token');
+const CONFIG = require('./config.json');
+const PORT = parseInt(CONFIG.server.port, 10);
+const HOST_NAME = CONFIG.server.hostName;
+const DATABASE_NAME = CONFIG.database.name;
+const DATABASE_PORT = CONFIG.database.port;
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
@@ -17,19 +16,20 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(cors());
 
-mongoose.connect('mongodb://' + HOST_NAME + '/' + DATABASE_NAME);
+mongoose.connect('mongodb://' + HOST_NAME + ':' + DATABASE_PORT + '/' + DATABASE_NAME, function(err) {
+  if (err) {
+    console.log(err);
+  } else {
+    console.log('Connected');
+  }
+});
 
-var usersRoutes = require('./routes/users');
-var eventsRoutes = require('./routes/events');
-var ticketsRoutes = require('./routes/tickets');
+const routes = require('./routes/routes');
+app.use('/api/', routes);
 
-app.use('/api/users', usersRoutes);
-app.use('/api/events', eventsRoutes);
-app.use('/api/tickets', ticketsRoutes);
-
-var server = app.listen(PORT, function () {
-  var host = server.address().address;
-  var port = server.address().port;
+const server = app.listen(PORT, function () {
+  const host = server.address().address;
+  const port = server.address().port;
 
   console.log('Server listening at http://%s:%s', host, port);
 });

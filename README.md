@@ -1,4 +1,4 @@
-# Express token based authentication
+# Anonymous Social Media College Room
 
 Example of token based authentication with Node.js, Express.js, MongoDB and Mongoose.
 
@@ -34,12 +34,13 @@ Authenticate user.
 }
 ```
 
-### GET `/api/items?token=<token>`
+### Make authenticated request
 
 Get items as an authenticated user.
 
 + Method: `GET`
-+ URL: `/api/items?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InRlbWEiLCJpYXQiOjE0NTEzMTMxOTgsImV4cCI6MTQ1MTMxNjc5OH0.TOi73nhmqGYU_Ajo-ufKcPk5TMmycyNSW3jDghPAHLc`
++ URL: `/api/user`
++ Header: `x-access-token: jwtToken`
 
 Example of a token string: `eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InRlbWEiLCJpYXQiOjE0NTEzMTMxOTgsImV4cCI6MTQ1MTMxNjc5OH0.TOi73nhmqGYU_Ajo-ufKcPk5TMmycyNSW3jDghPAHLc`
 
@@ -47,11 +48,16 @@ Example of a token string: `eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI
 
 `npm install`
 
+## DB Setup
+
+Install docker on host machine, then run the following commands:
+```
+mkdir ~/data
+docker run -d -p 27019:27017 -v ~/data:/data/db mongo
+```
+
+Runs mongodb on port 27019, using Robo3t of some other mongodb explorer connect to mongodb and create a database named yikyak.
+
 ## Run
 
 `npm start`
-
-## References
-
-+ https://scotch.io/tutorials/authenticate-a-node-js-api-with-json-web-tokens
-+ https://jwt.io
