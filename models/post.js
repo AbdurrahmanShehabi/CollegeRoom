@@ -8,9 +8,13 @@ const schema = new Schema({
     type: Schema.Types.ObjectId,
     required: true,
   },
+  category: {
+    type: String,
+    required: true
+  },
   title: {
     type: String,
-    required: true,
+    required: true
   },
   content: {
     type: String,

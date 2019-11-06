@@ -8,7 +8,7 @@
     "expiresInSeconds": "3600"
   },
   "database": {
-    "name": "yikyak",
+    "name": "collegeroom",
     "port": 27019
   },
   "randomNames": [

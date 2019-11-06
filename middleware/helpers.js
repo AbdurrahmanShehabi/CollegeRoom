@@ -39,8 +39,7 @@ function verifyToken(req, res, next) {
 }
 
 const getUser = co(function *getUser(req, res, next) {
-  req.user = yield User.findOne({ username: req.username } ).lean();
-  delete req.user.password;
+  req.user = yield User.findOne({ username: req.username });
   next()
 });
 

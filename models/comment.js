@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 mongoose.Promise = require('bluebird');
-const shortid = require('shortid');
 
 const Schema = mongoose.Schema;
 
@@ -17,7 +16,10 @@ const schema = new Schema({
     type: String,
     required: true
   },
-
+  userRandomName: {
+    type: String,
+    required: true
+  },
   createdAt: {
     type: Date
   },

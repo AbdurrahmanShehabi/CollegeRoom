@@ -39,13 +39,13 @@ function selectRandomName(usedNames) {
   usedNames = new Set(usedNames);
   let used = usedNames.size;
   // If number of usedNames exceeds available names we add a postfix to increase range of names and have no collisions
-  let postfix = used >= animalNames.length ? Math.round(Math.random() * (10000 - 1000) + 1000) : '';
+  let postfix = used >= animalNames.length ?  ('_' + Math.round(Math.random() * (10000 - 1000) + 1000)) : '';
   // Index used to search for a random name
   let index = Math.round(Math.random() * animalNames.length);
   let name = animalNames[index] + postfix;
 
-  while (!usedNames.has(name)) {
-    index = Math.round(Math.random() * animalNames.length);
+  while (usedNames.has(name)) {
+    index += 1; // Linear handling of collisions
     name = animalNames[index] + postfix;
   }
   return animalNames[index];

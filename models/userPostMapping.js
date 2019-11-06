@@ -5,11 +5,11 @@ const Schema = mongoose.Schema;
 
 const schema = new Schema({
   user: {
-    type: String,
+    type: Schema.Types.ObjectId,
     required: true,
   },
   post: {
-    type: String,
+    type: Schema.Types.ObjectId,
     required: true,
   },
   userRandomName: {
@@ -34,4 +34,4 @@ schema.pre('save', function (next) {
   next();
 });
 
-module.exports = mongoose.model('UserPostMappings', schema, 'user_post_mappings');
+module.exports = mongoose.model('UserPostMapping', schema, 'user_post_mapping');

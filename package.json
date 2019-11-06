@@ -1,5 +1,5 @@
 {
-  "name": "yiyak-clone",
+  "name": "college-room",
   "version": "1.0.0",
   "description": "Easy to use generic express backend with jwt token auth built on mongo",
   "main": "app.js",
@@ -11,7 +11,7 @@
   "dependencies": {
     "bcrypt": "^3.0.6",
     "bluebird": "^3.7.1",
-    "body-parser": "^1.14.2",
+    "body-parser": "^1.19.0",
     "cors": "^2.7.1",
     "express": "^4.13.3",
     "jsonwebtoken": "^5.4.1",
