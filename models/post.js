@@ -1,7 +1,12 @@
 const mongoose = require('mongoose');
-mongoose.Promise = require('bluebird');
+const Promise = require('bluebird');
+mongoose.Promise = Promise;
+const co = Promise.coroutine;
+
 
 const Schema = mongoose.Schema;
+
+const Comment = require('./comment');
 
 const schema = new Schema({
   user: {
@@ -31,6 +36,37 @@ const schema = new Schema({
     type: Date
   },
 });
+
+schema.methods = {
+  toJSON: function (includeUser = false) {
+    const result = {
+      id: this._id.toString(),
+      category: this.category,
+      title: this.content,
+      content: this.content,
+      createdAt: this.createdAt,
+    };
+    if (includeUser) {
+      result.user = this.user.toString();
+    }
+    return result;
+  },
+  toSummaryJSON: function () {
+    return {
+      id: this._id.toString(),
+      title: this.title,
+      category: this.category,
+      createdAt: this.createdAt,
+    }
+  },
+  getComments: co(function *(asJSON = false) {
+    const comments = yield Comment.find({ _id: { $in: this.comments } });
+    if (asJSON) {
+      return comments.map((comment) => { return comment.toJSON(true); });
+    }
+    return comments;
+  }),
+};
 
 // on every save, add the date
 schema.pre('save', function (next) {

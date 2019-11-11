@@ -1,5 +1,6 @@
 const Promise = require('bluebird');
 const co = Promise.coroutine;
+const mongoose = require('mongoose');
 const jsonwebtoken = require('jsonwebtoken');
 const CONFIG = require('../config.json');
 const TOKEN_SECRET = CONFIG.token.secret;
@@ -39,7 +40,7 @@ function verifyToken(req, res, next) {
 }
 
 const getUser = co(function *getUser(req, res, next) {
-  req.user = yield User.findOne({ username: req.username });
+  req.user = yield User.findOne({ username: req.username }, { password: 0 });
   next()
 });
 

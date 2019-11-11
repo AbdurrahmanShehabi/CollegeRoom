@@ -2,7 +2,6 @@ const Promise = require('bluebird');
 const co = Promise.coroutine;
 
 const Comment = require('../models/comment');
-const User = require('../models/user');
 const Post = require('../models/post');
 const UserPostMapping = require('../models/userPostMapping');
 
@@ -60,7 +59,7 @@ const createComment = co(function *createComment(req, res) {
   yield req.user.save();
   
   // Return comment
-  return comment;
+  return comment.toJSON();
 });
 
 module.exports = { createComment };

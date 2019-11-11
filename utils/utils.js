@@ -18,7 +18,7 @@ function wrapPromiseHandler(promiseRequestHandler) {
       // Success response are sent by each handler
     } catch (err) {
       const status = err.status || 500;
-      console.log(err.stack);
+      console.log(err);
       res.status(status).send({
         error: err
       });
@@ -28,7 +28,8 @@ function wrapPromiseHandler(promiseRequestHandler) {
 
 class ApiError extends Error {
   constructor (status, message) {
-    super(message);
+    super();
+    this.message = message;
     this.name = this.constructor.name;
     Error.captureStackTrace(this, this.constructor);
     this.status = status || this.constructor.status || 500;

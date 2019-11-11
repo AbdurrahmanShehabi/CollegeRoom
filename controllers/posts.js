@@ -2,12 +2,8 @@ const Promise = require('bluebird');
 const co = Promise.coroutine;
 
 const Post = require('../models/post');
-const User = require('../models/user');
-const Comment = require('../models/comment');
-const UserPostMapping = require('../models/userPostMapping');
 
 const ApiError = require('../utils/utils').ApiError;
-const selectRandomName = require('../utils/utils').selectRandomName;
 
 const createPost = co(function *createPost(req, res) {
 
@@ -27,22 +23,24 @@ const createPost = co(function *createPost(req, res) {
 });
 
 const getPost = co(function *getPost(req, res) {
-  const post = yield Post.findOne({ _id: req.params.id }).lean();
+  let post = yield Post.findOne({ _id: req.params.id });
   if (!post) {
-    throw new ApiError(400, 'No post found');
+    throw new ApiError(404, 'No post found');
   }
 
   // Fetch all comments for post
-  const comments = yield Comment.find({ _id: { $in: post.comments } }).lean();
-  const userPostMap = yield UserPostMapping.findOne({ user: req.user._id, post: req.params.id });
-  if (userPostMap) {
-    comments.forEach((comment) => {
-      if (req.user._id.equals(comment.user)) {
-        comment.userRandomName = 'You';
-      }
-    });
-  }
-  comments.forEach((comment) => { delete comment.user });
+  const comments = yield post.getComments(true);
+  comments.forEach((comment) => {
+    if (req.user.id === comment.user) {
+      comment.userRandomName += ' (You)';
+    }
+    // This line below is the anonymizer, removing this line will return user ids for all comments
+    delete comment.user;
+  });
+
+
+  // Convert post to JSON
+  post = post.toJSON();
   post.comments = comments;
 
   return post;
@@ -54,7 +52,8 @@ const getPosts = co(function *getPosts(req, res) {
     query.category = req.body.category;
   }
 
-  const posts = yield Post.find(query, { _id: 1, title: 1, createdAt: 1 }).sort({ createdAt: 1 }).lean();
+  let posts = yield Post.find(query).sort({ createdAt: 1 });
+  posts = posts.map((post) => { return post.toSummaryJSON() });
   
   return posts;
 });

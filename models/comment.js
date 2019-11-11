@@ -25,6 +25,22 @@ const schema = new Schema({
   },
 });
 
+schema.methods = {
+  toJSON: function (includeUser) {
+    const result = {
+      id: this._id.toString(),
+      post: this.post.toString(),
+      content: this.content,
+      userRandomName: this.userRandomName,
+      createdAt: this.createdAt,
+    };
+    if (includeUser) {
+      result.user = this.user.toString();
+    }
+    return result;
+  }
+};
+
 // on every save, add the date
 schema.pre('save', function (next) {
   // get the current date

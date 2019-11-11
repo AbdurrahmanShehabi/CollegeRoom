@@ -30,13 +30,12 @@ const createUser = co(function *createUser(req, res) {
 
   yield user.save();
 
-  return user;
+  return user.toJSON();
 });
 
 const getUser = co(function *createUser(req, res) {
   const user = yield User.findOne({ username: req.user.username });
-  delete user.password;
-  return user;
+  return user.toJSON();
 });
 
 

@@ -16,13 +16,14 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(cors());
 
-mongoose.connect('mongodb://' + HOST_NAME + ':' + DATABASE_PORT + '/' + DATABASE_NAME, function(err) {
-  if (err) {
-    console.log(err);
-  } else {
-    console.log('Connected');
-  }
-});
+mongoose.connect('mongodb://' + HOST_NAME + ':' + DATABASE_PORT + '/' + DATABASE_NAME, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+})
+.then(() => console.log('DB Connected!'))
+.catch(err => {
+  console.log(`DB Connection Error: ${err.message}`);
+});;
 
 const routes = require('./routes/routes');
 app.use('/api/', routes);
