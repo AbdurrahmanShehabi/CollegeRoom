@@ -49,8 +49,6 @@ const createUser = co(function *createUser(req, res) {
     }
   });
 
-  yield user.save();
-
   // Send verification email
   const message = {
     from: 'signup@collegeroom.com',
@@ -59,6 +57,9 @@ const createUser = co(function *createUser(req, res) {
     html: `<a href="localhost:8888/api/users/verify?username=${username}&verificationHash=${verificationHash}">Click to verify</a>`
   };
   yield transporter.sendMail(message);
+
+  // Save user after we successfully send verification email
+  yield user.save();
 
   return user.toJSON();
 });
