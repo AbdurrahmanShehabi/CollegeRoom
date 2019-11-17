@@ -42,7 +42,7 @@ schema.methods = {
     const result = {
       id: this._id.toString(),
       category: this.category,
-      title: this.content,
+      title: this.title,
       content: this.content,
       createdAt: this.createdAt,
     };
