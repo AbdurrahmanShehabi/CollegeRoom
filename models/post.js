@@ -55,6 +55,7 @@ schema.methods = {
     return {
       id: this._id.toString(),
       title: this.title,
+      content: this.content,
       category: this.category,
       createdAt: this.createdAt,
     }
