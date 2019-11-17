@@ -1,5 +1,9 @@
 const mongoose = require('mongoose');
-mongoose.Promise = require('bluebird');
+const Promise = require('bluebird');
+mongoose.Promise = Promise;
+const co = Promise.coroutine;
+
+const Post = require('./post');
 
 const Schema = mongoose.Schema;
 
@@ -30,18 +34,16 @@ const schema = new Schema({
 });
 
 schema.methods = {
-  toJSON: function (includeData = false) {
-    const result = {
+  toJSON: function () {
+    return {
       id: this._id.toString(),
       createdAt: this.createdAt,
       updatedAt: this.updatedAt,
     };
-    if (includeData) {
-      result.posts = this.posts;
-      result.comments = this.comments;
-    }
-    return result;
-  }
+  },
+  getPosts: co(function *() {
+    return Post.find({ _id: { $in: this.posts } }).sort({ createdAt: 1 });
+  }),
 };
 
 

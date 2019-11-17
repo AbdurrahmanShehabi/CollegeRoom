@@ -19,7 +19,7 @@ const createPost = co(function *createPost(req, res) {
   req.user.posts.push(post._id);
   req.user.save();
 
-  return post;
+  return post.toJSON();
 });
 
 const getPost = co(function *getPost(req, res) {

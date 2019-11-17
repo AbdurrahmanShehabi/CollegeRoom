@@ -11,7 +11,7 @@ const ph = utils.wrapPromiseHandler;
 const router = express.Router();
 
 // Users
-router.post('/users/', ph(UserAPI.createUser));
+router.post('/users/register', ph(UserAPI.createUser));
 router.post('/users/login', ph(UserAPI.authenticateUser));
 router.get('/users/', helpers.verifyToken, helpers.getUser, ph(UserAPI.getUser));
 

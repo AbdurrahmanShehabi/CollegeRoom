@@ -23,7 +23,7 @@ mongoose.connect('mongodb://' + HOST_NAME + ':' + DATABASE_PORT + '/' + DATABASE
 .then(() => console.log('DB Connected!'))
 .catch(err => {
   console.log(`DB Connection Error: ${err.message}`);
-});;
+});
 
 const routes = require('./routes/routes');
 app.use('/api/', routes);

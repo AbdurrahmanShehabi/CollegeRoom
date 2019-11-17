@@ -1,6 +1,5 @@
 const Promise = require('bluebird');
 const co = Promise.coroutine;
-const mongoose = require('mongoose');
 const jsonwebtoken = require('jsonwebtoken');
 const CONFIG = require('../config.json');
 const TOKEN_SECRET = CONFIG.token.secret;

@@ -33,9 +33,12 @@ const createUser = co(function *createUser(req, res) {
   return user.toJSON();
 });
 
-const getUser = co(function *createUser(req, res) {
+const getUser = co(function *getUser(req, res) {
   const user = yield User.findOne({ username: req.user.username });
-  return user.toJSON();
+  const userPosts = yield user.getPosts();
+  const result = user.toJSON();
+  result.posts = userPosts.map((post) => { return post.toSummaryJSON(); });
+  return result;
 });
 
 
