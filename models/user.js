@@ -13,6 +13,15 @@ const schema = new Schema({
     required: true,
     unique: true
   },
+  emailVerification: {
+    isVerified: {
+      type: Boolean,
+      default: false
+    },
+    verificationHash: {
+      type: String,
+    },
+  },
   password: {
     type: String,
     required: true

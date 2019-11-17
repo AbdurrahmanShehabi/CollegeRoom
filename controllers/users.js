@@ -2,6 +2,8 @@ const Promise = require('bluebird');
 const co = Promise.coroutine;
 const bcrypt = require('bcrypt');
 const jsonwebtoken = require('jsonwebtoken');
+const nodemailer = require('nodemailer');
+const crypto = require('crypto');
 
 const CONFIG = require('../config.json');
 const TOKEN_SECRET = CONFIG.token.secret;
@@ -11,24 +13,52 @@ const User = require('../models/user');
 
 const ApiError = require('../utils/utils').ApiError;
 
+// Email server
+const transporter = nodemailer.createTransport({
+  host: 'smtp.mailtrap.io',
+  port: 2525,
+  auth: {
+     user: CONFIG.mailtrap.username,
+     pass: CONFIG.mailtrap.password
+  }
+});
+
 const createUser = co(function *createUser(req, res) {
-  // find the user
-  let user = yield User.findOne({ username: req.body.username });
+  const username = req.body.username;
+  if (!/(\W|^)[\w.+-]*@sjsu\.edu(\W|$)/.test(username)) {
+    throw new ApiError(400, 'Invalid email, must be an @sjsu.edu email');
+  }
+
+  // Find the user
+  let user = yield User.findOne({ username: username });
   if (user) {
-    throw new ApiError(409, 'User with the username \'' + req.body.username + '\' already exists.');
+    throw new ApiError(409, 'User with the username \'' + username + '\' already exists.');
   }
 
   const salt = yield bcrypt.genSalt(10);
   const hash = yield bcrypt.hash(req.body.password, salt);
+  const verificationHash = crypto.randomBytes(40).toString('hex');
 
   user = new User({
-    username: req.body.username,
+    username: username,
     password: hash,
     firstName: req.body.firstName,
-    lastName: req.body.lastName
+    lastName: req.body.lastName,
+    emailVerification: {
+      verificationHash: verificationHash
+    }
   });
 
   yield user.save();
+
+  // Send verification email
+  const message = {
+    from: 'signup@collegeroom.com',
+    to: username,
+    subject: 'Verify Email',
+    html: `<a href="localhost:8888/api/users/verify?username=${username}&verificationHash=${verificationHash}">Click to verify</a>`
+  };
+  yield transporter.sendMail(message);
 
   return user.toJSON();
 });
@@ -54,10 +84,50 @@ const authenticateUser = co(function *authenticateUser(req, res) {
     throw new ApiError(401, 'Authentication failed');
   }
 
+  if (user.emailVerification.isVerified === false) {
+    throw new ApiError(401, 'Email must be verified in order to complete authentication');
+  }
+
   // If user is found and password is right then we create a token
   return {
     token: jsonwebtoken.sign({ username: user.username }, TOKEN_SECRET, { expiresIn: TOKEN_EXPIRES })
   };
 });
 
-module.exports = { createUser, authenticateUser, getUser };
+const verifyUser = co(function *verifyUser(req, res) {
+  const user = yield User.findOne({ username: req.query.username, 'emailVerification.verificationHash': req.query.verificationHash });
+  if (!user) {
+    throw new ApiError(401, 'Unable to verify email');
+  }
+
+  user.emailVerification.isVerified = true;
+  user.emailVerification.verificationHash = undefined; 
+  yield user.save();
+
+  return user.toJSON();
+});
+
+const resendVerificationEmail = co(function *(req, res) {
+  const username = req.body.username;
+  const user = yield User.findOne({ username: username });
+  if (user.emailVerification.isVerified === true) {
+    return {};
+  }
+
+  const verificationHash = crypto.randomBytes(40).toString('hex');
+  user.emailVerification.verificationHash = verificationHash;
+  yield user.save();
+
+  // Send verification email
+  const message = {
+    from: 'signup@collegeroom.com',
+    to: username,
+    subject: 'Verify Email',
+    html: `<a href="localhost:8888/api/users/verify?username=${username}&verificationHash=${verificationHash}">Click to verify</a>`
+  };
+  yield transporter.sendMail(message);
+
+  return {};
+});
+
+module.exports = { createUser, authenticateUser, getUser, verifyUser, resendVerificationEmail };

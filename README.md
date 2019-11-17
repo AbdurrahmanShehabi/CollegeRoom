@@ -26,7 +26,7 @@ Download Robo3t or some other mongodb explorer and connect to mongodb on port 27
 
 ### POST `/api/users`
 
-Create a new user.
+Create a new user. In order to be able to do email verification, create a mailtrap.io account and use the demo inbox username and password in the config file for the mailtrap config values.
 
 + Method: `POST`
 + URL: `/api/users`

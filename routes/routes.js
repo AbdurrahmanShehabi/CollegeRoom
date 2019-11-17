@@ -11,9 +11,11 @@ const ph = utils.wrapPromiseHandler;
 const router = express.Router();
 
 // Users
-router.post('/users/register', ph(UserAPI.createUser));
+router.post('/users/signup', ph(UserAPI.createUser));
 router.post('/users/login', ph(UserAPI.authenticateUser));
 router.get('/users/', helpers.verifyToken, helpers.getUser, ph(UserAPI.getUser));
+router.get('/users/verify', ph(UserAPI.verifyUser));
+router.post('/users/resendVerificationEmail', ph(UserAPI.resendVerificationEmail));
 
 // Posts
 router.get('/posts/:id', helpers.verifyToken, helpers.getUser, ph(PostAPI.getPost));

@@ -11,6 +11,10 @@
     "name": "collegeroom",
     "port": 27019
   },
+  "mailtrap": {
+    "username": "",
+    "password": ""
+  },
   "randomNames": [
     "Aardvark",
     "Albatross",
