@@ -104,13 +104,15 @@ const verifyUser = co(function *verifyUser(req, res) {
   user.emailVerification.verificationHash = undefined; 
   yield user.save();
 
-  return user.toJSON();
+  const token = jsonwebtoken.sign({ username: user.username }, TOKEN_SECRET, { expiresIn: TOKEN_EXPIRES });
+
+  res.redirect(`http://localhost:8080?token=${token}`);
 });
 
 const resendVerificationEmail = co(function *(req, res) {
   const username = req.body.username;
   const user = yield User.findOne({ username: username });
-  if (user.emailVerification.isVerified === true) {
+  if (!user || user.emailVerification.isVerified === true) {
     return {};
   }
 

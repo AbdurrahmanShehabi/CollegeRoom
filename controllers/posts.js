@@ -48,6 +48,10 @@ const getPost = co(function *getPost(req, res) {
 
 const getPosts = co(function *getPosts(req, res) {
   const query = {};
+  if (req.body.search) {
+    query.title = { $regex: req.body.search };
+  }
+
   if (req.body.category) {
     query.category = req.body.category;
   }
