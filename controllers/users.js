@@ -29,6 +29,10 @@ const createUser = co(function *createUser(req, res) {
     throw new ApiError(400, 'Invalid email, must be an @sjsu.edu email');
   }
 
+  if (!req.body.password) {
+    throw new ApiError(400, 'Must provide password');
+  }
+
   // Find the user
   let user = yield User.findOne({ username: username });
   if (user) {

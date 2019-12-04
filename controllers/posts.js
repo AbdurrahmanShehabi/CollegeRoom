@@ -56,7 +56,7 @@ const getPosts = co(function *getPosts(req, res) {
     query.category = req.body.category;
   }
 
-  let posts = yield Post.find(query).sort({ createdAt: 1 });
+  let posts = yield Post.find(query).sort({ createdAt: -1 });
   posts = posts.map((post) => { return post.toSummaryJSON() });
   
   return posts;
